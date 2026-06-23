@@ -1,31 +1,21 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Notification App</title>
+    <title>Notification System</title>
 </head>
 <body>
 
 <h2>Notifications</h2>
 
-<button onclick="loadNotifications()">Load Notifications</button>
-
 <button onclick="addNotification()">Add Test Notification</button>
+<button onclick="loadNotifications()">Load Notifications</button>
 
 <ul id="list"></ul>
 
 <script>
 const API = "http://localhost:3000/notifications";
 
-// GET notifications
-async function loadNotifications() {
-    const res = await fetch(API);
-    const data = await res.json();
-
-    document.getElementById("list").innerHTML =
-        data.map(n => `<li>${n.message} - ${n.type}</li>`).join("");
-}
-
-// POST notification
+// ADD
 async function addNotification() {
     await fetch(API, {
         method: "POST",
@@ -34,12 +24,24 @@ async function addNotification() {
         },
         body: JSON.stringify({
             message: "Frontend Test Notification",
-            type: "Event",
-            is_read: false
+            type: "Event"
         })
     });
 
     loadNotifications();
+}
+
+// LOAD
+async function loadNotifications() {
+    const res = await fetch(API);
+    const data = await res.json();
+
+    console.log(data); // IMPORTANT DEBUG
+
+    document.getElementById("list").innerHTML =
+        data.map(n =>
+            `<li><b>${n.message}</b> - ${n.type}</li>`
+        ).join("");
 }
 </script>
 

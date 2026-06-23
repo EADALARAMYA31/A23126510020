@@ -3,26 +3,31 @@ const app = express();
 
 app.use(express.json());
 
-// in-memory database
 let notifications = [];
 
-// GET all notifications
+// GET
 app.get("/notifications", (req, res) => {
     res.json(notifications);
 });
 
-// POST notification
+// POST
 app.post("/notifications", (req, res) => {
     const data = req.body;
-    notifications.push(data);
-    res.json({ message: "Notification added", data });
-});
 
-// PATCH mark as read
-app.patch("/notifications/:id", (req, res) => {
-    const id = req.params.id;
-    notifications[id] = { ...notifications[id], is_read: true };
-    res.json({ message: "Marked as read" });
+    // ADD ID (IMPORTANT FIX)
+    const newNotification = {
+        id: notifications.length,
+        message: data.message,
+        type: data.type,
+        is_read: false
+    };
+
+    notifications.push(newNotification);
+
+    res.json({
+        message: "Notification added",
+        data: newNotification
+    });
 });
 
 app.listen(3000, () => {
