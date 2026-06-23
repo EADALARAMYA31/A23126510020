@@ -34,3 +34,9 @@ We implemented logging middleware to track system behavior.
 [REQUEST] POST /notifications
 [RESPONSE] 200 OK
 [ERROR] Exception captured
+DATABASE FINAL VERSION
+PostgreSQL used (design only)
+notifications table
+students table
+indexing + partitioning
+API connects to DB via backend

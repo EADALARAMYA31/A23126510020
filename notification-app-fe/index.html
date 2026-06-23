@@ -1,13 +1,47 @@
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Notification Service</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Notification App</title>
+</head>
+<body>
+
+<h2>Notifications</h2>
+
+<button onclick="loadNotifications()">Load Notifications</button>
+
+<button onclick="addNotification()">Add Test Notification</button>
+
+<ul id="list"></ul>
+
+<script>
+const API = "http://localhost:3000/notifications";
+
+// GET notifications
+async function loadNotifications() {
+    const res = await fetch(API);
+    const data = await res.json();
+
+    document.getElementById("list").innerHTML =
+        data.map(n => `<li>${n.message} - ${n.type}</li>`).join("");
+}
+
+// POST notification
+async function addNotification() {
+    await fetch(API, {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+            message: "Frontend Test Notification",
+            type: "Event",
+            is_read: false
+        })
+    });
+
+    loadNotifications();
+}
+</script>
+
+</body>
 </html>
