@@ -1,33 +1,39 @@
 const express = require("express");
+const cors = require("cors");
+const pool = require("./db");
+
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 
-let notifications = [];
+// GET from PostgreSQL OR external API
+app.get("/notifications", async (req, res) => {
+    try {
+        const result = await pool.query(
+            "SELECT id, type, message, timestamp FROM notifications ORDER BY id DESC"
+        );
 
-// GET
-app.get("/notifications", (req, res) => {
-    res.json(notifications);
+        res.json(result.rows);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
-// POST
-app.post("/notifications", (req, res) => {
-    const data = req.body;
+// POST notification
+app.post("/notifications", async (req, res) => {
+    const { type, message } = req.body;
 
-    // ADD ID (IMPORTANT FIX)
-    const newNotification = {
-        id: notifications.length,
-        message: data.message,
-        type: data.type,
-        is_read: false
-    };
+    try {
+        const result = await pool.query(
+            "INSERT INTO notifications (type, message) VALUES ($1, $2) RETURNING *",
+            [type, message]
+        );
 
-    notifications.push(newNotification);
-
-    res.json({
-        message: "Notification added",
-        data: newNotification
-    });
+        res.json(result.rows[0]);
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
 });
 
 app.listen(3000, () => {

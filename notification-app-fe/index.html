@@ -1,60 +1,28 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Notification System</title>
+    <title>Notification Dashboard</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<h2>Notifications</h2>
+<div class="container">
 
-<button onclick="addNotification()">Add Test Notification</button>
-<button onclick="loadNotifications()">Load Notifications</button>
+    <h1>📢 Notification System</h1>
 
-<ul id="list"></ul>
+    <div class="form">
+        <input id="type" placeholder="Type (Placement/Event/Result)">
+        <input id="message" placeholder="Message">
+        <button onclick="addNotification()">Send</button>
+    </div>
 
-<script>
-const API = "http://localhost:3000/notifications";
+    <button onclick="loadNotifications()">Load Notifications</button>
 
-// ADD
-async function addNotification() {
-    await fetch(API, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-            message: "Frontend Test Notification",
-            type: "Event"
-        })
-    });
+    <div id="list"></div>
 
-    loadNotifications();
-}
+</div>
 
-// LOAD
-async function loadNotifications() {
-    try {
-        const res = await fetch("http://localhost:3000/notifications");
-        const data = await res.json();
-
-        console.log("DEBUG DATA:", data);
-
-        const list = document.getElementById("list");
-
-        list.innerHTML = "";
-
-        data.forEach(n => {
-            const li = document.createElement("li");
-            li.innerText = `${n.message} - ${n.type}`;
-            list.appendChild(li);
-        });
-
-    } catch (error) {
-        console.log("ERROR:", error);
-        alert("Failed to load notifications");
-    }
-}
-</script>
+<script src="app.js"></script>
 
 </body>
 </html>
