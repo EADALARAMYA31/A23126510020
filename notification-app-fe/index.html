@@ -33,15 +33,26 @@ async function addNotification() {
 
 // LOAD
 async function loadNotifications() {
-    const res = await fetch(API);
-    const data = await res.json();
+    try {
+        const res = await fetch("http://localhost:3000/notifications");
+        const data = await res.json();
 
-    console.log(data); // IMPORTANT DEBUG
+        console.log("DEBUG DATA:", data);
 
-    document.getElementById("list").innerHTML =
-        data.map(n =>
-            `<li><b>${n.message}</b> - ${n.type}</li>`
-        ).join("");
+        const list = document.getElementById("list");
+
+        list.innerHTML = "";
+
+        data.forEach(n => {
+            const li = document.createElement("li");
+            li.innerText = `${n.message} - ${n.type}`;
+            list.appendChild(li);
+        });
+
+    } catch (error) {
+        console.log("ERROR:", error);
+        alert("Failed to load notifications");
+    }
 }
 </script>
 
